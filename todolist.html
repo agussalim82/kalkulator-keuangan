@@ -6,14 +6,17 @@
     <title>Aplikasi Daftar Tugas Harian</title>
     <style>
         body { font-family: sans-serif; background-color: #f0f3f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 350px; }
+        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 420px; }
         h2 { text-align: center; color: #2c3e50; margin-top: 0; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: white; cursor: pointer; min-width: 120px; }
+        input { flex: 1; min-width: 140px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
         button { padding: 10px 15px; background-color: #3498db; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         button:hover { background-color: #2980b9; }
         ul { list-style: none; padding: 0; margin: 0; }
-        li { background: #f9f9f9; padding: 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #3498db; }
+        li { background: #f9f9f9; padding: 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #3498db; gap: 8px; cursor: pointer; }
+        .kategori { font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+        .teks-tugas { flex: 1; word-break: break-word; }
         .btn-hapus { background-color: #e74c3c; padding: 5px 10px; font-size: 12px; }
         .btn-hapus:hover { background-color: #c0392b; }
         .selesai {
@@ -29,6 +32,11 @@
     <h2>Daftar Tugasku</h2>
     
     <div class="input-group">
+        <select id="inputKategori" title="Kategori tugas">
+            <option value="🏢 Kerja">🏢 Kerja</option>
+            <option value="🏠 Rumah">🏠 Rumah</option>
+            <option value="📚 Belajar">📚 Belajar</option>
+        </select>
         <input type="text" id="inputTugas" placeholder="Ketik tugas baru di sini...">
         <button onclick="tambahTugas()">Tambah</button>
     </div>
@@ -45,7 +53,8 @@
 
     function tambahTugas() {
         var input = document.getElementById("inputTugas");
-        var teksTugas = input.value;
+        var kategori = document.getElementById("inputKategori").value;
+        var teksTugas = input.value.trim();
 
         if (teksTugas === "") {
             alert("Ketik tugasnya dulu ya!");
@@ -55,10 +64,14 @@
         var ul = document.getElementById("daftarTugas");
         var li = document.createElement("li");
         li.setAttribute("onclick", "tandaiSelesai(this)");
-        li.innerHTML = teksTugas + ' <button class="btn-hapus" onclick="event.stopPropagation(); hapusTugas(this)">Hapus</button>';
+        li.innerHTML =
+            '<span class="kategori">' + kategori + '</span>' +
+            '<span class="teks-tugas">' + teksTugas + '</span>' +
+            '<button class="btn-hapus" onclick="event.stopPropagation(); hapusTugas(this)">Hapus</button>';
         ul.appendChild(li);
 
         input.value = "";
+        input.focus();
         simpanDataKeLaptop(); // Simpan setiap kali tambah tugas
     }
 
