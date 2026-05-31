@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kalkulator Keuangan</title>
+    <style>
+        /* Ini adalah CSS untuk menghias tampilan aplikasi */
+        body { font-family: sans-serif; background-color: #e0e5e9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 350px; }
+        h2 { text-align: center; color: #1a365d; font-size: 28px; letter-spacing: 1px;}
+        label { font-weight: bold; display: block; margin-top: 15px; color: #555; }
+        input { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 6px; }
+        button { width: 100%; padding: 12px; background-color: #e74c3c; color: white; border: none; border-radius: 50px; font-size: 16px; cursor: pointer; margin-top: 20px; font-weight: bold; }
+        button:hover { background-color: #2980b9; }
+        .hasil { margin-top: 20px; padding: 15px; background: #e8f8f5; border-radius: 6px; text-align: center; font-size: 18px; font-weight: bold; color: #2c3e50; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Kalkulator Dompet</h2>
+    
+    <!-- Kolom 1 -->
+    <label for="pemasukan">Total Pemasukan (Rp):</label>
+    <input type="number" id="pemasukan" placeholder="Contoh: 5000000">
+
+    <!-- Kolom 2 -->
+    <label for="pengeluaran">Total Pengeluaran (Rp):</label>
+    <input type="number" id="pengeluaran" placeholder="Contoh: 2000000">
+
+    <!-- Kolom 3 (Kolom Baru) -->
+    <label for="tabungan">Target Tabungan (Rp):</label>
+    <input type="number" id="tabungan" placeholder="Contoh: 1000000">
+
+    <!-- TOMBOL HITUNG (Pastikan bagian ini ada) -->
+    <button onclick="hitungSisaUang()">Hitung Sisa Uang</button>
+    <button onclick="bersihkanSemua()" style="background-color: #95a5a6; margin-top: 10px;">Reset Kolom</button>
+    <!-- KOTAK UNTUK MEMUNCULKAN HASIL -->
+    <div id="kotakHasil" class="hasil"></div>
+</div>
+
+<script>
+    function hitungSisaUang() {
+        // Ambil data dari 3 kolom
+        var pemasukan = document.getElementById("pemasukan").value;
+        var pengeluaran = document.getElementById("pengeluaran").value;
+        var tabungan = document.getElementById("tabungan").value;
+
+        // Hitung rumus
+        var sisa = pemasukan - pengeluaran - tabungan;
+
+        // Munculkan hasil ke layar
+        var kotakHasil = document.getElementById("kotakHasil");
+        kotakHasil.style.display = "block";
+        
+        if (sisa < 0) {
+            kotakHasil.style.backgroundColor = "#fce4e4"; 
+            kotakHasil.style.color = "#c0392b"; 
+            kotakHasil.innerHTML = "Keuangan Minus! Anda tekor: Rp " + sisa.toLocaleString('id-ID');
+        } else {
+            kotakHasil.style.backgroundColor = "#e8f8f5"; 
+            kotakHasil.style.color = "#2c3e50";
+            kotakHasil.innerHTML = "Sisa uang aman: Rp " + sisa.toLocaleString('id-ID');
+        }
+    }
+    // Fungsi baru untuk mereset kolom
+    function bersihkanSemua() {
+        // 1. Mengosongkan kembali isi dari ketiga kolom input
+        document.getElementById("pemasukan").value = "";
+        document.getElementById("pengeluaran").value = "";
+        document.getElementById("tabungan").value = "";
+
+        // 2. Menyembunyikan kembali kotak hasil dari layar
+        var kotakHasil = document.getElementById("kotakHasil");
+        kotakHasil.style.display = "none";
+    }
+</script>
+
+</body>
+
+</html>
