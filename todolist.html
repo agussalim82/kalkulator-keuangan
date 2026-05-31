@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Daftar Tugas Harian</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f3f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 350px; }
+        h2 { text-align: center; color: #2c3e50; margin-top: 0; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        button { padding: 10px 15px; background-color: #3498db; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #2980b9; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { background: #f9f9f9; padding: 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #3498db; }
+        .btn-hapus { background-color: #e74c3c; padding: 5px 10px; font-size: 12px; }
+        .btn-hapus:hover { background-color: #c0392b; }
+        .selesai {
+            text-decoration: line-through; /* Membuat efek coretan garis pada teks */
+            color: #aaa; /* Mengubah warna tulisan menjadi abu-abu pudar */
+            border-left-color: #2ecc71; /* Mengubah warna bar samping menjadi hijau */
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Daftar Tugasku</h2>
+    
+    <div class="input-group">
+        <input type="text" id="inputTugas" placeholder="Ketik tugas baru di sini...">
+        <button onclick="tambahTugas()">Tambah</button>
+    </div>
+
+    <!-- Tempat daftar tugas akan dimunculkan -->
+    <ul id="daftarTugas"></ul>
+</div>
+
+<script>
+    // Jalankan fungsi ini otomatis setiap kali halaman web dibuka
+    window.onload = function() {
+        muatDataDariLaptop();
+    };
+
+    function tambahTugas() {
+        var input = document.getElementById("inputTugas");
+        var teksTugas = input.value;
+
+        if (teksTugas === "") {
+            alert("Ketik tugasnya dulu ya!");
+            return;
+        }
+
+        var ul = document.getElementById("daftarTugas");
+        var li = document.createElement("li");
+        li.setAttribute("onclick", "tandaiSelesai(this)");
+        li.innerHTML = teksTugas + ' <button class="btn-hapus" onclick="event.stopPropagation(); hapusTugas(this)">Hapus</button>';
+        ul.appendChild(li);
+
+        input.value = "";
+        simpanDataKeLaptop(); // Simpan setiap kali tambah tugas
+    }
+
+    function hapusTugas(tombol) {
+        tombol.parentElement.remove();
+        simpanDataKeLaptop(); // Simpan setiap kali hapus tugas
+    }
+
+    function tandaiSelesai(elemenBaris) {
+        elemenBaris.classList.toggle("selesai");
+        simpanDataKeLaptop(); // Simpan setiap kali mencoret tugas
+    }
+
+    // ================= LOGIKA LOCALSTORAGE =================
+    function simpanDataKeLaptop() {
+        var ul = document.getElementById("daftarTugas");
+        // Simpan seluruh struktur HTML di dalam kotak UL ke memori laptop
+        localStorage.setItem("daftarTugasku", ul.innerHTML);
+    }
+
+    function muatDataDariLaptop() {
+        var dataSaja = localStorage.getItem("daftarTugasku");
+        // Jika ada data lama yang tersimpan, munculkan kembali
+        if (dataSaja) {
+            document.getElementById("daftarTugas").innerHTML = dataSaja;
+        }
+    }
+
+</script>
+
+</body>
+</html>
