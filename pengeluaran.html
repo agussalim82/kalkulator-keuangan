@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catatan Pengeluaran Harian</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: linear-gradient(160deg, #e8eef2 0%, #d4dce4 100%);
+            margin: 0;
+            min-height: 100vh;
+            padding: 16px;
+            color: #2c3e50;
+        }
+
+        .app {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #3d6b8e;
+            font-weight: 600;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 10px 16px;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 16px;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .nav-back:hover {
+            background: #fff;
+            transform: translateX(-2px);
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 8px 24px rgba(44, 62, 80, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.45rem;
+            color: #1a365d;
+            margin: 0 0 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin: 0 0 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: #4a5568;
+            margin-bottom: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #f8fafc;
+            color: #2d3748;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #6ba3c7;
+            box-shadow: 0 0 0 3px rgba(107, 163, 199, 0.2);
+            background: #fff;
+        }
+
+        .btn-tambah {
+            width: 100%;
+            padding: 13px;
+            margin-top: 6px;
+            background: linear-gradient(135deg, #5b9bd5 0%, #4a8bc2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(74, 139, 194, 0.35);
+        }
+
+        .btn-tambah:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(74, 139, 194, 0.4);
+        }
+
+        .btn-tambah:active {
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #4a5568;
+            margin: 24px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        #daftarPengeluaran {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        #daftarPengeluaran:empty::after {
+            content: "Belum ada pengeluaran. Tambahkan yang pertama!";
+            display: block;
+            text-align: center;
+            color: #a0aec0;
+            font-size: 0.88rem;
+            padding: 24px 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px dashed #e2e8f0;
+        }
+
+        .item-pengeluaran {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #6ba3c7;
+        }
+
+        .info-pengeluaran {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nama-pengeluaran {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #2d3748;
+            word-break: break-word;
+        }
+
+        .jumlah-pengeluaran {
+            font-size: 0.88rem;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .btn-hapus {
+            flex-shrink: 0;
+            padding: 7px 12px;
+            background: #e8a0a0;
+            color: #7b2d2d;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-hapus:hover {
+            background: #e07a7a;
+            color: #fff;
+        }
+
+        .total-box {
+            margin-top: 20px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, #e8f4f0 0%, #d9ece6 100%);
+            border-radius: 14px;
+            text-align: center;
+            border: 1px solid #c6e0d6;
+        }
+
+        .total-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #5a7a6e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .total-angka {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #2d6a4f;
+        }
+
+        @media (max-width: 400px) {
+            .card {
+                padding: 20px 16px;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .item-pengeluaran {
+                flex-wrap: wrap;
+            }
+
+            .btn-hapus {
+                width: 100%;
+                padding: 9px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <a href="index.html" class="nav-back">⬅️ Kembali ke Beranda</a>
+
+    <div class="card">
+        <h1>Catatan Pengeluaran Harian</h1>
+        <p class="subtitle">Catat setiap pengeluaranmu hari ini</p>
+
+        <div class="form-group">
+            <label for="namaPengeluaran">Nama Pengeluaran</label>
+            <input type="text" id="namaPengeluaran" placeholder="Contoh: Makan siang, Ongkos">
+        </div>
+
+        <div class="form-group">
+            <label for="jumlahUang">Jumlah Uang (Rp)</label>
+            <input type="number" id="jumlahUang" placeholder="Contoh: 25000" min="0">
+        </div>
+
+        <button class="btn-tambah" onclick="tambahPengeluaran()">Tambah Pengeluaran</button>
+
+        <p class="section-title">Daftar Pengeluaran</p>
+        <ul id="daftarPengeluaran"></ul>
+
+        <div class="total-box">
+            <div class="total-label">Total Seluruh Pengeluaran</div>
+            <div class="total-angka" id="totalPengeluaran">Rp 0</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var STORAGE_KEY = "catatanPengeluaranHarian";
+
+    window.onload = function () {
+        muatDariLocalStorage();
+    };
+
+    function formatRupiah(angka) {
+        return "Rp " + Number(angka).toLocaleString("id-ID");
+    }
+
+    function hitungTotal() {
+        var items = document.querySelectorAll(".item-pengeluaran");
+        var total = 0;
+
+        items.forEach(function (item) {
+            total += Number(item.getAttribute("data-jumlah")) || 0;
+        });
+
+        document.getElementById("totalPengeluaran").textContent = formatRupiah(total);
+    }
+
+    function renderItem(nama, jumlah) {
+        var ul = document.getElementById("daftarPengeluaran");
+        var li = document.createElement("li");
+        li.className = "item-pengeluaran";
+        li.setAttribute("data-jumlah", jumlah);
+        li.innerHTML =
+            '<div class="info-pengeluaran">' +
+                '<div class="nama-pengeluaran">' + nama + '</div>' +
+                '<div class="jumlah-pengeluaran">' + formatRupiah(jumlah) + '</div>' +
+            '</div>' +
+            '<button class="btn-hapus" onclick="hapusPengeluaran(this)">Hapus</button>';
+        ul.appendChild(li);
+    }
+
+    function tambahPengeluaran() {
+        var inputNama = document.getElementById("namaPengeluaran");
+        var inputJumlah = document.getElementById("jumlahUang");
+        var nama = inputNama.value.trim();
+        var jumlah = Number(inputJumlah.value);
+
+        if (nama === "") {
+            alert("Isi nama pengeluarannya dulu ya!");
+            inputNama.focus();
+            return;
+        }
+
+        if (inputJumlah.value === "" || isNaN(jumlah) || jumlah <= 0) {
+            alert("Masukkan jumlah uang yang valid (lebih dari 0)!");
+            inputJumlah.focus();
+            return;
+        }
+
+        renderItem(nama, jumlah);
+        hitungTotal();
+        simpanKeLocalStorage();
+
+        inputNama.value = "";
+        inputJumlah.value = "";
+        inputNama.focus();
+    }
+
+    function hapusPengeluaran(tombol) {
+        tombol.parentElement.remove();
+        hitungTotal();
+        simpanKeLocalStorage();
+    }
+
+    function simpanKeLocalStorage() {
+        var items = document.querySelectorAll(".item-pengeluaran");
+        var data = [];
+
+        items.forEach(function (item) {
+            data.push({
+                nama: item.querySelector(".nama-pengeluaran").textContent,
+                jumlah: Number(item.getAttribute("data-jumlah"))
+            });
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function muatDariLocalStorage() {
+        var dataTersimpan = localStorage.getItem(STORAGE_KEY);
+        if (!dataTersimpan) {
+            hitungTotal();
+            return;
+        }
+
+        var data = JSON.parse(dataTersimpan);
+        var ul = document.getElementById("daftarPengeluaran");
+        ul.innerHTML = "";
+
+        data.forEach(function (item) {
+            renderItem(item.nama, item.jumlah);
+        });
+
+        hitungTotal();
+    }
+
+    document.getElementById("jumlahUang").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            tambahPengeluaran();
+        }
+    });
+
+    document.getElementById("namaPengeluaran").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            document.getElementById("jumlahUang").focus();
+        }
+    });
+</script>
+
+</body>
+</html>

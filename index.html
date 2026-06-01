@@ -3,93 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Kalkulator Keuangan</title>
+    <title>Login — Aplikasi Keuangan</title>
     <style>
-        /* Ini adalah CSS untuk menghias tampilan aplikasi */
-        body { font-family: sans-serif; background-color: #e0e5e9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 350px; }
-        h2 { text-align: center; color: #1a365d; font-size: 28px; letter-spacing: 1px;}
-        label { font-weight: bold; display: block; margin-top: 15px; color: #555; }
-        input { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 6px; }
-        button { width: 100%; padding: 12px; background-color: #e74c3c; color: white; border: none; border-radius: 50px; font-size: 16px; cursor: pointer; margin-top: 20px; font-weight: bold; }
-        button:hover { background-color: #2980b9; }
-        .hasil { margin-top: 20px; padding: 15px; background: #e8f8f5; border-radius: 6px; text-align: center; font-size: 18px; font-weight: bold; color: #2c3e50; display: none; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 16px;
+            background: linear-gradient(145deg, #1a1f3c 0%, #2d3561 40%, #3d4f7c 70%, #4a6289 100%);
+            color: #e8edf5;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 36px 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .login-box.hidden {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.96);
+            pointer-events: none;
+            position: absolute;
+            visibility: hidden;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .login-header .icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .login-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+
+        .login-header p {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.55);
+            margin-top: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: rgba(255, 255, 255, 0.65);
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.07);
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-group input:focus {
+            border-color: rgba(99, 179, 237, 0.7);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.15);
+        }
+
+        .btn-masuk {
+            width: 100%;
+            padding: 14px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4299e1 0%, #667eea 100%);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            box-shadow: 0 6px 20px rgba(66, 153, 225, 0.35);
+        }
+
+        .btn-masuk:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(66, 153, 225, 0.45);
+        }
+
+        .btn-masuk:active {
+            transform: translateY(0);
+        }
+
+        .pesan-error {
+            color: #fc8181;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 14px;
+            min-height: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .pesan-error.tampil {
+            opacity: 1;
+        }
+
+        /* Menu navigasi — disembunyikan saat awal */
+        .nav-menu {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            margin-top: 32px;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+        }
+
+        .nav-menu.tampil {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-menu h2 {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .nav-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        .nav-card .card-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-card .card-info h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .nav-card .card-info p {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-card.kalkulator { border-left: 3px solid #e74c3c; }
+        .nav-card.todolist   { border-left: 3px solid #3498db; }
+        .nav-card.pengeluaran { border-left: 3px solid #e67e22; }
+
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 28px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+    <!-- Kotak Login -->
+    <div class="login-box" id="loginBox">
+        <div class="login-header">
+            <div class="icon">🔐</div>
+            <h1>Selamat Datang</h1>
+            <p>Masuk untuk mengakses aplikasi</p>
+        </div>
 
-    <h2>Kalkulator Dompet</h2>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" value="admin" placeholder="Masukkan username">
+        </div>
 
-    <!-- Kolom 1 -->
-    <label for="pemasukan">Total Pemasukan (Rp):</label>
-    <input type="number" id="pemasukan" placeholder="Contoh: 5000000">
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" value="1234" placeholder="Masukkan password">
+        </div>
 
-    <!-- Kolom 2 -->
-    <label for="pengeluaran">Total Pengeluaran (Rp):</label>
-    <input type="number" id="pengeluaran" placeholder="Contoh: 2000000">
+        <button class="btn-masuk" id="btnMasuk" onclick="prosesLogin()">Masuk</button>
 
-    <!-- Kolom 3 (Kolom Baru) -->
-    <label for="tabungan">Target Tabungan (Rp):</label>
-    <input type="number" id="tabungan" placeholder="Contoh: 1000000">
+        <p class="pesan-error" id="pesanError">Username atau Password Salah!</p>
+    </div>
 
-    <!-- TOMBOL HITUNG (Pastikan bagian ini ada) -->
-    <button onclick="hitungSisaUang()">Hitung Sisa Uang</button>
-    <button onclick="bersihkanSemua()" style="background-color: #95a5a6; margin-top: 10px;">Reset Kolom</button>
-    <!-- KOTAK UNTUK MEMUNCULKAN HASIL -->
-    <div id="kotakHasil" class="hasil"></div>
-    
-        <!-- Menu dipindahkan ke dalam sini -->
-    <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ddd;">
-    <a href="todolist.html" style="text-decoration: none; color: #3498db; font-weight: bold; font-size: 14px; border: 1px solid #3498db; padding: 8px 16px; border-radius: 20px; background-color: white; display: inline-block;">➡️ Buka To-Do List</a>
-<!-- Area Navigasi di bagian bawah index.html -->
-    
-    <!-- JALUR BARU: Tambahkan tombol aplikasi ketiga di bawah ini -->
-    <a href="pengeluaran.html" style="text-decoration: none; color: #e67e22; font-weight: bold; font-size: 14px; border: 1px solid #e67e22; padding: 8px 16px; border-radius: 20px; background-color: white; display: inline-block; margin: 5px;">💸 Catat Pengeluaran</a>
-</div>
-
-</div>
-
-</div>
+    <!-- Menu Navigasi 3 Aplikasi (disembunyikan dengan CSS) -->
+    <nav class="nav-menu" id="navMenu">
+        <h2>Pilih Aplikasi</h2>
+        <div class="nav-cards">
+            <a href="kalkulator.html" class="nav-card kalkulator">
+                <span class="card-icon">🧮</span>
+                <div class="card-info">
+                    <h3>Kalkulator Dompet</h3>
+                    <p>Hitung sisa uang &amp; tabungan</p>
+                </div>
+            </a>
+            <a href="todolist.html" class="nav-card todolist">
+                <span class="card-icon">✅</span>
+                <div class="card-info">
+                    <h3>To-Do List</h3>
+                    <p>Kelola daftar tugas harian</p>
+                </div>
+            </a>
+            <a href="pengeluaran.html" class="nav-card pengeluaran">
+                <span class="card-icon">💸</span>
+                <div class="card-info">
+                    <h3>Catat Pengeluaran</h3>
+                    <p>Catat &amp; pantau pengeluaran</p>
+                </div>
+            </a>
+        </div>
+    </nav>
 
 <script>
-    function hitungSisaUang() {
-        // Ambil data dari 3 kolom
-        var pemasukan = document.getElementById("pemasukan").value;
-        var pengeluaran = document.getElementById("pengeluaran").value;
-        var tabungan = document.getElementById("tabungan").value;
+    function prosesLogin() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var pesanError = document.getElementById("pesanError");
+        var loginBox = document.getElementById("loginBox");
+        var navMenu = document.getElementById("navMenu");
 
-        // Hitung rumus
-        var sisa = pemasukan - pengeluaran - tabungan;
+        if (username === "admin" && password === "1234") {
+            pesanError.classList.remove("tampil");
 
-        // Munculkan hasil ke layar
-        var kotakHasil = document.getElementById("kotakHasil");
-        kotakHasil.style.display = "block";
-        
-        if (sisa < 0) {
-            kotakHasil.style.backgroundColor = "#fce4e4"; 
-            kotakHasil.style.color = "#c0392b"; 
-            kotakHasil.innerHTML = "Keuangan Minus! Anda tekor: Rp " + sisa.toLocaleString('id-ID');
+            loginBox.classList.add("hidden");
+
+            navMenu.style.display = "block";
+            requestAnimationFrame(function () {
+                navMenu.classList.add("tampil");
+            });
         } else {
-            kotakHasil.style.backgroundColor = "#e8f8f5"; 
-            kotakHasil.style.color = "#2c3e50";
-            kotakHasil.innerHTML = "Sisa uang aman: Rp " + sisa.toLocaleString('id-ID');
+            pesanError.classList.add("tampil");
         }
     }
-    // Fungsi baru untuk mereset kolom
-    function bersihkanSemua() {
-        // 1. Mengosongkan kembali isi dari ketiga kolom input
-        document.getElementById("pemasukan").value = "";
-        document.getElementById("pengeluaran").value = "";
-        document.getElementById("tabungan").value = "";
 
-        // 2. Menyembunyikan kembali kotak hasil dari layar
-        var kotakHasil = document.getElementById("kotakHasil");
-        kotakHasil.style.display = "none";
-    }
+    document.getElementById("password").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") prosesLogin();
+    });
 </script>
 
 </body>
-
 </html>
